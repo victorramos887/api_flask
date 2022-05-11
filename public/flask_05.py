@@ -1,2 +1,0 @@
-# MÉTODOS HTTP
-
