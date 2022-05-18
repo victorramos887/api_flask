@@ -1,29 +1,30 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+import psycopg2 as pg
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URL'] = 'postgresql://postgres:postgres@192.168.1.199/gemini'
 db = SQLAlchemy(app)
 
-class user(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique = True)
-    email = db.Column(db.String(120), unique = True)
 
-    def __init__(self):
-        super().__init__()
-        self.username = username
-        self.email = email
+def conectar():
+    conn = pg.connect(database = 'gemini', host = '192.168.1.199', password = 'postgres', user = 'postgres')
+    return conn
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+
 
 
 @app.route('/')
-
 def index():
-    return '<h1 style=color:red>Hello Flask</h1>'
+    conn = conectar()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM main.datalogger")
+
+    datalogger = cur.fetchall()
+    cur.close()
+    conn.close()
+    return 'str(type(datalogger))'
 
 
 if __name__ == "__main__":
