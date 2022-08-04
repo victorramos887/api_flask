@@ -8,7 +8,7 @@ def index():
     #print(request.method, request.args)
     t1 = request.args.to_dict()
     t2 = dict(request.args)
-    return json.dumps([t1['nome'], t2['idade']])
+    return json.dumps([t1['nome'], t2['idade'], t1['analise']])
 
 if __name__ == '__main__':
     app.run(debug=True)
