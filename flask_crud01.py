@@ -34,15 +34,56 @@ def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
 def seleciona_usuarios():
 
     usuarios_objetos = Usuario.query.all()
-    usuario_json = [usuario.to_json() for usuario in usuarios_objetos]
+    usuarios_json = [usuario.to_json() for usuario in usuarios_objetos]
+    return gera_response(200,"usuarios", usuarios_json, 'Retorno Response')
+
+
+@app.route('/usuario/<id>', methods=['GET'])
+def seleciona_usuario(id):
+
+    usuario_objeto = Usuario.query.filter_by(id=id).first()
+    usuario_json = usuario_objeto.to_json()
     print(usuario_json)
-    return gera_response(200,"usuario", usuario_json, 'Retorno Response')
+    return gera_response(200, "usuario", usuario_json, 'Retorno Response')
+
 
 #http://127.0.0.1:5000/usuarios
-app.run(debug=True)
-#SELECIONAR UM
+
+#SELECIONAR INDIVIDUALMENTE
+
 #CADASTRAR
+@app.route('/usuario', methods=['POST'])
+def criar_usuario():
+    body = request.get_json()
+
+    #Validar se veio os parametros para
+    try:
+        usuario = Usuario(nome = body['nome'], email = body['email'])
+        db.session.add(usuario)
+        db.session.commit()
+        return gera_response(201, 'usuario', usuario.to_json(), 'Criado com sucesso')
+    except Exception as e:
+        print(e)
+        return gera_response(400,"usuario", {}, "Erro ao cadastrar")
+
 #ATUALIZAR
+@app.route('/usuario/<id>', methods=['PUT'])
+def atualizar_usuario(id):
+    usuario_objeto = Usuario.query.filter_by(id=id).first()
+    body = request.get_json()
+
+    try:
+        if('nome' in body):
+            usuario_objeto.nome = body['nome']
+        if('email' in body):
+            usuario_objeto.email = body['email']
+        db.session.add(usuario_objeto)
+        db.session.commit()
+        return gera_response(200, "usuario", usuario_objeto.to_json(), 'Atualizado com sucesso')
+    except Exception as e:
+        print('ERRO', e)
+        return gera_response(400, "usuario", {}, 'Erro ao atualizar usuario')
 #DELETAR
 
 
+app.run(debug=True)
