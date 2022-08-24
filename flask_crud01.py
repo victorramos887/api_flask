@@ -86,7 +86,6 @@ def atualizar_usuario(id):
 
 #DELETAR
 
-
 @app.route('/usuario/<id>', methods=["DELETE"])
 def deletar_usuario(id):
     usuario_objeto = Usuario.query.filter_by(id = id).first()
