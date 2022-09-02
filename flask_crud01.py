@@ -4,7 +4,7 @@ from psycopg2 import connect
 import json
 
 
-app = Flask(__name__)
+app = Flask(__name__) 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/gemini'
 
